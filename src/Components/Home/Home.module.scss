@@ -3,10 +3,11 @@
     height: 100vh;
     display: flex;
     align-items: center;
-    flex-direction: row;
+    flex-direction: column;
     justify-content: center;
     text-align: center;
     background-color: #F2F2F2;
+    overflow: hidden;
     .buttonContainer {
         display: flex;
         flex-direction: row;
@@ -17,5 +18,9 @@
 
 }
 
-
+@media only screen and (max-width: 767px) {
+    .homeContainer {
+        height: 90vh;
+    }
+}
 
