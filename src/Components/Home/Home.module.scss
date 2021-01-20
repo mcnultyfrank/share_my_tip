@@ -1,0 +1,21 @@
+.homeContainer {
+    // width: 90vw;
+    height: 10g0vh;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: center;
+    text-align: center;
+    background-color: #F2F2F2;
+    .buttonContainer {
+        display: flex;
+        flex-direction: row;
+    }
+    .modal{
+        margin: 5vw;
+    }
+
+}
+
+
+
