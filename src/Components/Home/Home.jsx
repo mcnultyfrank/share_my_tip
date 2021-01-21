@@ -7,9 +7,7 @@ import { Button,
   Form,
   Grid,
   Segment,
-  TransitionablePortal, 
   Header, 
-  Image, 
   Modal,
   Divider,
   Input,
@@ -17,11 +15,10 @@ import { Button,
   Label,
   Container,
   Message,
-Popup,
 Icon,
 Checkbox,
 Dropdown,
-Table} from 'semantic-ui-react'
+} from 'semantic-ui-react'
 
   
 
@@ -66,6 +63,11 @@ const Home = () => {
       const billAndTipTotal =  parseInt(amount.target.value) + parseInt(amount.target.value) * percentage/100;
       return setShowBill(billAndTipTotal / parseInt(people.target.value).toFixed(2))
     }
+    const caculateEntireBill = (bill, tip) => {
+      const numberOfPeople = parseInt(people.target.value)
+      const billAndTipTotal =  parseInt(amount.target.value) + parseInt(amount.target.value) * percentage/100;
+      return setShowBill(billAndTipTotal.toFixed(2))
+    }
 
 
   
@@ -74,9 +76,7 @@ const Home = () => {
 
   return (
     <div className = {styles.homeContainer}>
-      <Header as='h2'>
-        <Image circular src='https://react.semantic-ui.com/images/avatar/large/patrick.png' /> Hi, there
-      </Header>
+
       <Container  textAlign='left' className = {styles.container} >
         <Segment placeholder>
               <Grid.Column stretched='true' stackable = 'false'>
@@ -143,20 +143,37 @@ const Home = () => {
                             />
                           </Dropdown.Menu>
                         </Dropdown>
-                        <Dropdown
-                          text='Bill type'
-                          icon='group'
-                          floating
-                          labeled
-                          button
-                          className='icon'
-                        >
-                          <Dropdown.Menu>
-                            <Dropdown.Header icon='tags' content='Choose Bill type' />
-                            <Dropdown.Divider />
+{/*                         
+                        <Form>
+                        
+                          <Form.Field>
+                            Selected value: <b>{this.state.value}</b>
+                          </Form.Field>
+                          <Form.Field>
                             
-                          </Dropdown.Menu>
-                        </Dropdown>
+                            <Checkbox
+                              slider
+                              
+                              label='Display individual bill'
+                              name='checkboxRadioGroup'
+                              value='this'
+                              checked={this.state.value === 'this'}
+                              onChange={this.handleChange}
+                            />
+                          </Form.Field>
+                          <Form.Field>
+                            <Checkbox
+                              slider
+                              label='Display entire bill'
+                              name='checkboxRadioGroup'
+                              value='that'
+                              checked={this.state.value === 'that'}
+                              onChange={this.handleChange}
+                            />
+                          </Form.Field>
+                        </Form> */}
+                  
+                      
                         
                       </Modal.Description>
                     </Modal.Content>
