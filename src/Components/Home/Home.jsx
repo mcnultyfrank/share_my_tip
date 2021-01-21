@@ -1,6 +1,7 @@
 import styles from "./Home.module.scss";
 import React, {useState, useEffect} from 'react'
 import 'semantic-ui-css/semantic.min.css'
+// import firebase, {provider} from "../../firebase"
 
 import { Button, 
   Progress,
@@ -18,10 +19,9 @@ import { Button,
 Icon,
 Checkbox,
 Dropdown,
+Popup,
+GridRow
 } from 'semantic-ui-react'
-
-  
-
 
 const Home = () => {
   const [open, setOpen] = useState(false);
@@ -30,6 +30,7 @@ const Home = () => {
   const [people, setPeople] = useState(0);
   const [showBill, setShowBill] = useState(0);
   const [defaultCurrency, setDefaultCurrency] = useState('£')
+  const [user, setUser] = useState(false);
   let number = Array.from(Array(20).keys())
   useEffect(() => {
     setPeople()
@@ -55,6 +56,8 @@ const Home = () => {
     if (percentage !== 0)
     setPercentage(count => count - 1);
   }
+
+
   
   
 
@@ -76,11 +79,20 @@ const Home = () => {
 
   return (
     <div className = {styles.homeContainer}>
-
+       
       <Container  textAlign='left' className = {styles.container} >
+      <Segment size='small' clearing>
+        <Button disabled floated='right' icon>
+          <Icon name='sign in' />
+        </Button>
+          <Header  as='h2' textAlign='center' color='green' floated='left'>
+            Share My Tip
+          </Header>
+        </Segment>
         <Segment placeholder>
               <Grid.Column stretched='true' stackable = 'false'>
               <Input size='large' type='number' placeholder='Number of people...'  onChange= {setPeople}/>
+              
               <datalist id='Number'>
                 {number.map((item) => {
                   return <option value={item}>{Item}</option>
@@ -104,8 +116,21 @@ const Home = () => {
               </Grid.Column>
               <Divider></Divider>
 
+
               <Grid.Column>
-                <Header  as='h3'>Calculate Bill and Tip</Header>
+              {/* <Grid centered padded columns={2}>
+                <Grid.Column textAlign='left'>
+                <Header  as='h4'>Calculate Bill and Tip </Header>
+                </Grid.Column>
+                <Grid.Column relaxed textAlign='right'>
+                <Popup size='tiny' position='top left' on='focus' flowing content='Output =  individual total bill and tip' trigger={<Button compact size='tiny' icon='question' />} />
+                </Grid.Column>
+              </Grid>
+               */}
+            
+   
+
+
                 <Button.Group  size='huge'>
                 <Button disabled={people === undefined || amount === undefined || people === 0 || amount === 0 ? true : false} color = 'instagram' onClick={() => caculateBill()} >Calculate</Button>
                     <Modal
@@ -143,38 +168,6 @@ const Home = () => {
                             />
                           </Dropdown.Menu>
                         </Dropdown>
-{/*                         
-                        <Form>
-                        
-                          <Form.Field>
-                            Selected value: <b>{this.state.value}</b>
-                          </Form.Field>
-                          <Form.Field>
-                            
-                            <Checkbox
-                              slider
-                              
-                              label='Display individual bill'
-                              name='checkboxRadioGroup'
-                              value='this'
-                              checked={this.state.value === 'this'}
-                              onChange={this.handleChange}
-                            />
-                          </Form.Field>
-                          <Form.Field>
-                            <Checkbox
-                              slider
-                              label='Display entire bill'
-                              name='checkboxRadioGroup'
-                              value='that'
-                              checked={this.state.value === 'that'}
-                              onChange={this.handleChange}
-                            />
-                          </Form.Field>
-                        </Form> */}
-                  
-                      
-                        
                       </Modal.Description>
                     </Modal.Content>
                     <Modal.Actions>
@@ -187,6 +180,8 @@ const Home = () => {
                       />
                     </Modal.Actions>
                   </Modal>
+                  {/* <Popup size='tiny' position='top left' on='focus' flowing content='Output =  individual total bill and tip' trigger={<Button color='green' compact size='tiny' icon='question'/>} /> */}
+
               </Button.Group>
               <Message >{`${showBill == undefined ? 0 : showBill}`}</Message>
             </Grid.Column>

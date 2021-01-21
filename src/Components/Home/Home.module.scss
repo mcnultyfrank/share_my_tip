@@ -7,8 +7,6 @@
     justify-content: center;
     text-align: center;
     background-color: #F2F2F2;
-    overflow: hidden;
-      touch-action: none;
 
     .buttonContainer {
         display: flex;
@@ -22,8 +20,28 @@
 
 @media only screen and (max-width: 767px) {
     .homeContainer {
-        height: 100vh;
+        overflow: hidden;
+        touch-action: pan-y;
         padding-bottom: 10vh;
+        
+
+    }
+}
+@media only screen and (max-width: 767px) and (orientation: landscape) {
+    .homeContainer {
+        touch-action: auto;
+        overflow: scroll;
+
+
+        height: 100vh;
+
+
+        // top: 100%;
+
+
+        // transform: rotate(90deg);
+
+        
 
     }
 }
