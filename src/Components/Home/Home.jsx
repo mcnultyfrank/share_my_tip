@@ -80,14 +80,14 @@ const Home = () => {
       <Container  textAlign='left' className = {styles.container} >
         <Segment placeholder>
               <Grid.Column stretched='true' stackable = 'false'>
-              <Input type='number' placeholder='Number of people...'  onChange= {setPeople}/>
+              <Input size='large' type='number' placeholder='Number of people...'  onChange= {setPeople}/>
               <datalist id='Number'>
                 {number.map((item) => {
                   return <option value={item}>{Item}</option>
                 })}
               </datalist>
               <Divider></Divider>
-              <Input labelPosition='right' type='number' placeholder='Amount' onChange= {setAmount}>
+              <Input  size='large' labelPosition='right' type='number' placeholder='Total bill amount...' onChange= {setAmount}>
               <Label basic>{defaultCurrency}</Label>
               <input />
               <Label></Label>

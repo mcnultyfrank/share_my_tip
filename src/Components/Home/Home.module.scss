@@ -8,6 +8,8 @@
     text-align: center;
     background-color: #F2F2F2;
     overflow: hidden;
+      touch-action: none;
+
     .buttonContainer {
         display: flex;
         flex-direction: row;
@@ -20,7 +22,9 @@
 
 @media only screen and (max-width: 767px) {
     .homeContainer {
-        height: 90vh;
+        height: 100vh;
+        padding-bottom: 10vh;
+
     }
 }
 
