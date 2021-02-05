@@ -1,8 +1,7 @@
 import styles from "./Home.module.scss";
 import React, {useState, useEffect} from 'react'
 import 'semantic-ui-css/semantic.min.css'
-// import firebase, {provider} from "../../firebase"
-
+import firebase, {provider} from "../../firebase"
 import { Button, 
   Progress,
   Form,
@@ -16,11 +15,11 @@ import { Button,
   Label,
   Container,
   Message,
-Icon,
-Checkbox,
-Dropdown,
-Popup,
-GridRow
+  Icon,
+  Checkbox,
+  Dropdown,
+  Popup,
+  GridRow
 } from 'semantic-ui-react'
 
 const Home = () => {
@@ -30,25 +29,8 @@ const Home = () => {
   const [people, setPeople] = useState(0);
   const [showBill, setShowBill] = useState(0);
   const [defaultCurrency, setDefaultCurrency] = useState('£')
-  const [user, setUser] = useState(false);
+  const [user, setUser] = useState(null);
   let number = Array.from(Array(20).keys())
-  useEffect(() => {
-    setPeople()
-    console.log(people);
-    
-  }, [])
-  useEffect(() => {
-    setAmount()
-    console.log(amount);
-  }, [])
-  useEffect(() => {
-    setShowBill()
-    console.log(showBill);
-  }, [])
-  useEffect(() => {
-    setDefaultCurrency('£');
-  }, [])
-
   const increasePercentageTip = () => {
     setPercentage(count => count + 1);
   }
@@ -56,10 +38,6 @@ const Home = () => {
     if (percentage !== 0)
     setPercentage(count => count - 1);
   }
-
-
-  
-  
 
   const caculateBill = (bill, tip) => {
       const numberOfPeople = parseInt(people.target.value)
@@ -72,27 +50,59 @@ const Home = () => {
       return setShowBill(billAndTipTotal.toFixed(2))
     }
 
+    const signIn = () => {
+      firebase.auth().signInWithRedirect(provider);
+    }
+    const signOut = () => {
+      firebase.auth().signOut();
+    }
+    const getUser = () => {
+      firebase.auth().onAuthStateChanged((user) => {
+        if(user){
+          setUser(user);
+        } else {
+          setUser(null)
+        }
+      })
+    }
 
-  
-  
-
-
+    useEffect(() => {
+      setPeople()
+      console.log(people);
+      
+    }, [])
+    useEffect(() => {
+      setAmount()
+      console.log(amount);
+    }, [])
+    useEffect(() => {
+      setShowBill()
+      console.log(showBill);
+    }, [])
+    useEffect(() => {
+      setDefaultCurrency('£');
+    }, [])
+    useEffect(() => {
+      getUser();
+    }, [])
+    
   return (
     <div className = {styles.homeContainer}>
-       
       <Container  textAlign='left' className = {styles.container} >
       <Segment size='small' clearing>
-        <Button disabled floated='right' icon>
-          <Icon name='sign in' />
-        </Button>
+          <Popup position='top center' content={user ? 'Sign Out' : 'Sign In'}trigger={ <Button onClick= {user ? () => signOut() : () => signIn()} floated='right' icon>
+          {user ? <Icon name='sign out' /> : <Icon name='sign in' />} 
+          </Button>} />
           <Header  as='h2' textAlign='center' color='green' floated='left'>
-            Share My Tip
+            Share My Tip.com
+          </Header>
+          <Header  as='h2' textAlign='center' color='green' floated='right'>
+            {user !==  null ? `Hi ${user.displayName}` : ` `}
           </Header>
         </Segment>
         <Segment placeholder>
               <Grid.Column stretched='true' stackable = 'false'>
               <Input size='large' type='number' placeholder='Number of people...'  onChange= {setPeople}/>
-              
               <datalist id='Number'>
                 {number.map((item) => {
                   return <option value={item}>{Item}</option>
@@ -110,29 +120,14 @@ const Home = () => {
               <Button.Or />
               <Button onClick = {increasePercentageTip} positive>Increase Tip</Button>
               </Button.Group>
-              <Divider></Divider>
-            
+              <Divider></Divider>            
                 <Progress size = {'large'} font progress = {`value${'%'}`} className={styles.progressBar} percent={percentage} indicating />
               </Grid.Column>
               <Divider></Divider>
-
-
               <Grid.Column>
-              {/* <Grid centered padded columns={2}>
-                <Grid.Column textAlign='left'>
-                <Header  as='h4'>Calculate Bill and Tip </Header>
-                </Grid.Column>
-                <Grid.Column relaxed textAlign='right'>
-                <Popup size='tiny' position='top left' on='focus' flowing content='Output =  individual total bill and tip' trigger={<Button compact size='tiny' icon='question' />} />
-                </Grid.Column>
-              </Grid>
-               */}
-            
-   
-
 
                 <Button.Group  size='huge'>
-                <Button disabled={people === undefined || amount === undefined || people === 0 || amount === 0 ? true : false} color = 'instagram' onClick={() => caculateBill()} >Calculate</Button>
+                <Button disabled={people === undefined || amount === undefined || people === 0 || amount === 0 ? true : false} color = 'instagram' onClick={() => caculateBill()} >Split Bill</Button>
                     <Modal
                     size = 'tiny'
                     onClose={() => setOpen(false)}
@@ -183,7 +178,7 @@ const Home = () => {
                   {/* <Popup size='tiny' position='top left' on='focus' flowing content='Output =  individual total bill and tip' trigger={<Button color='green' compact size='tiny' icon='question'/>} /> */}
 
               </Button.Group>
-              <Message >{`${showBill == undefined ? 0 : showBill}`}</Message>
+              <Message >{`${showBill === undefined ? 0 : showBill}`}</Message>
             </Grid.Column>
           </Segment>
           </Container>
