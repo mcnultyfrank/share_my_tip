@@ -116,25 +116,25 @@ const Home = () => {
           <Popup position='top center' content={user ? 'Sign Out' : 'Sign In'}trigger={ <Button onClick= {user ? () => signOut() : () => signIn()} floated='right' icon>
           {user ? <Icon name='sign out' /> : <Icon name='sign in' />} 
           </Button>} />
-          <Header  as='h2' textAlign='center' color='green' floated='left'>
+          <Header  as='h2' textAlign='center' color='green' size='small' floated='left'>
             Share My Tip.com
           </Header>
           <Header  as='h2' textAlign='center' color='green' floated='right'>
-            {user ? `Hi ${user.displayName}` : ` there`}
+            {user ? `Hi ${user.displayName}` : ``}
           </Header>
         </Segment>
         <Segment placeholder>
               <Grid.Column stretched='true' stackable = 'false'>
               {/* <Label error={amount === undefined ? true : false} basic size='medium'>People</Label> */}
-              <Input icon='group' size='large' type='number' placeholder='Number of people...' error={people === undefined || people === 0 ? true : false} onChange= {setPeople}/>
+              <Input icon='group' size='large' type='number' placeholder='Number of people...' value = {people === 0 ? 'reset' : null} error={people === undefined || people === 0 ? true : false} onInput= {setPeople}/>
               <datalist id='Number'>
                 {number.map((item) => {
                   return <option value={item}>{Item}</option>
                 })}
               </datalist>
-              <Divider></Divider>
+              <Divider></Divider> 
               {/* <Label error={amount === undefined ? true : false} basic size='huge'>{defaultCurrency}</Label> */}
-              <Input icon='money' size='large' type='number' placeholder='Total bill amount...' error={amount === undefined ? true : false} onChange= {setAmount}/>
+              <Input icon='money' size='large' type='number' placeholder='Total bill amount...' value = {amount === 0 ? 'reset' : null} error={amount === undefined || amount === 0 ? true : false} onChange= {setAmount}/>
 
               {/* <Input size='large' labelPosition='right' type='number' placeholder='Total bill amount...' error={amount === undefined ? true : false} onChange= {setAmount}/> */}
               {/* <Input  size='large' labelPosition='right' type='number' placeholder='Total bill amount...' error={amount === undefined ? true : false} onChange= {setAmount}> */}
@@ -203,7 +203,7 @@ const Home = () => {
                     </Modal.Actions>
                   </Modal>
               </Button.Group>
-              <Message >{`${showBill === undefined || showBill === Infinity || showBill === NaN ? 0 : defaultCurrency + showBill.toFixed(2) + ' ' + billType}`}</Message>
+              <Message >{`${showBill === undefined || showBill === Infinity || showBill === NaN || amount === 0 || amount === undefined? 0 : defaultCurrency + showBill.toFixed(2) + ' ' + billType}`}</Message>
             </Grid.Column>
           </Segment>
           </Container>
