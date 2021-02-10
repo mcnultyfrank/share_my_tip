@@ -25,11 +25,12 @@ import { Button,
 const Home = () => {
   const [open, setOpen] = useState(false);
   const [percentage, setPercentage] = useState(5);
+  const [defaultCurrency, setDefaultCurrency] = useState('£')
   const [amount, setAmount] = useState(0);
   const [people, setPeople] = useState(0);
   const [showBill, setShowBill] = useState(0);
-  const [defaultCurrency, setDefaultCurrency] = useState('£')
   const [user, setUser] = useState(null);
+  const [billType, setBillType] = useState('Each')
   let number = Array.from(Array(20).keys())
   const increasePercentageTip = () => {
     setPercentage(count => count + 1);
@@ -38,17 +39,22 @@ const Home = () => {
     if (percentage !== 0)
     setPercentage(count => count - 1);
   }
+  const reset = () => {
+    setAmount(0)
+    setPeople(0)
+    setPercentage(5)
+  }
 
   const caculateBill = (bill, tip) => {
       const numberOfPeople = parseInt(people.target.value)
       const billAndTipTotal =  parseInt(amount.target.value) + parseInt(amount.target.value) * percentage/100;
-      return setShowBill(billAndTipTotal / parseInt(people.target.value).toFixed(2))
+      return setShowBill(billAndTipTotal / numberOfPeople)
     }
     const caculateEntireBill = (bill, tip) => {
-      const numberOfPeople = parseInt(people.target.value)
       const billAndTipTotal =  parseInt(amount.target.value) + parseInt(amount.target.value) * percentage/100;
-      return setShowBill(billAndTipTotal.toFixed(2))
+      return setShowBill(billAndTipTotal)
     }
+    
 
     const signIn = () => {
       firebase.auth().signInWithRedirect(provider);
@@ -67,17 +73,13 @@ const Home = () => {
     }
 
     useEffect(() => {
-      setPeople()
-      console.log(people);
-      
+      setPeople()      
     }, [])
     useEffect(() => {
       setAmount()
-      console.log(amount);
     }, [])
     useEffect(() => {
       setShowBill()
-      console.log(showBill);
     }, [])
     useEffect(() => {
       setDefaultCurrency('£');
@@ -85,6 +87,27 @@ const Home = () => {
     useEffect(() => {
       getUser();
     }, [])
+    useEffect(() => {
+    firstNameOnly();
+    }, [user])
+    const firstNameOnly = () => {
+      if(user){
+        for (let i = 0; i < user.displayName.split("").length; i++) {
+          if(user.displayName.split("")[i] === ' ' )
+          return
+          else                   
+          firstName.push(user.displayName.split("")[i]);
+          console.log(firstName.join(""));
+        }
+      }
+      else{
+        return null
+      }
+    }
+    const firstName = [];
+    
+
+
     
   return (
     <div className = {styles.homeContainer}>
@@ -97,27 +120,30 @@ const Home = () => {
             Share My Tip.com
           </Header>
           <Header  as='h2' textAlign='center' color='green' floated='right'>
-            {user !==  null ? `Hi ${user.displayName}` : ` `}
+            {user ? `Hi ${user.displayName}` : ` there`}
           </Header>
         </Segment>
         <Segment placeholder>
               <Grid.Column stretched='true' stackable = 'false'>
-              <Input size='large' type='number' placeholder='Number of people...'  onChange= {setPeople}/>
+              {/* <Label error={amount === undefined ? true : false} basic size='medium'>People</Label> */}
+              <Input icon='group' size='large' type='number' placeholder='Number of people...' error={people === undefined || people === 0 ? true : false} onChange= {setPeople}/>
               <datalist id='Number'>
                 {number.map((item) => {
                   return <option value={item}>{Item}</option>
                 })}
               </datalist>
               <Divider></Divider>
-              <Input  size='large' labelPosition='right' type='number' placeholder='Total bill amount...' onChange= {setAmount}>
-              <Label basic>{defaultCurrency}</Label>
-              <input />
-              <Label></Label>
-              </Input>
+              {/* <Label error={amount === undefined ? true : false} basic size='huge'>{defaultCurrency}</Label> */}
+              <Input icon='money' size='large' type='number' placeholder='Total bill amount...' error={amount === undefined ? true : false} onChange= {setAmount}/>
+
+              {/* <Input size='large' labelPosition='right' type='number' placeholder='Total bill amount...' error={amount === undefined ? true : false} onChange= {setAmount}/> */}
+              {/* <Input  size='large' labelPosition='right' type='number' placeholder='Total bill amount...' error={amount === undefined ? true : false} onChange= {setAmount}> */}
+              {/* <input /> */}
+              {/* </Input> */}
               <Divider></Divider>
               <Button.Group>
-              <Button onClick = {decreasePercentageTip} >Decrease Tip</Button>
-              <Button.Or />
+              <Button onClick = {decreasePercentageTip} color='google plus'>Decrease Tip</Button>
+              {/* <Button.Or /> */}
               <Button onClick = {increasePercentageTip} positive>Increase Tip</Button>
               </Button.Group>
               <Divider></Divider>            
@@ -125,15 +151,16 @@ const Home = () => {
               </Grid.Column>
               <Divider></Divider>
               <Grid.Column>
-
                 <Button.Group  size='huge'>
-                <Button disabled={people === undefined || amount === undefined || people === 0 || amount === 0 ? true : false} color = 'instagram' onClick={() => caculateBill()} >Split Bill</Button>
+            
+                <Button disabled={people === undefined || amount === undefined || people === 0 || amount === 0 ? true : false} color = 'green' onClick={() => caculateBill()} >Split Bill</Button>
+                <Button onClick={() => reset()} compact color='google plus'>Clear</Button>
                     <Modal
                     size = 'tiny'
                     onClose={() => setOpen(false)}
                     onOpen={() => setOpen(true)}
                     open={open}
-                    trigger={<Button><Icon name = 'setting'></Icon> Settings</Button>}
+                    trigger={<Button><Icon name = 'setting'></Icon></Button>}
                     >
                     <Modal.Header>Settings</Modal.Header>
                     <Modal.Content>
@@ -175,10 +202,8 @@ const Home = () => {
                       />
                     </Modal.Actions>
                   </Modal>
-                  {/* <Popup size='tiny' position='top left' on='focus' flowing content='Output =  individual total bill and tip' trigger={<Button color='green' compact size='tiny' icon='question'/>} /> */}
-
               </Button.Group>
-              <Message >{`${showBill === undefined ? 0 : showBill}`}</Message>
+              <Message >{`${showBill === undefined || showBill === Infinity || showBill === NaN ? 0 : defaultCurrency + showBill.toFixed(2) + ' ' + billType}`}</Message>
             </Grid.Column>
           </Segment>
           </Container>
